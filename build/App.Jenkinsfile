@@ -2,7 +2,7 @@
  
 pipeline {
   agent {
-    label 'docker'
+    label 'host'
   }
   
   options {
@@ -28,6 +28,7 @@ pipeline {
       }
     }
 
+   /*
     stage("Code Quality") {
       steps {
         dir("./app") {
@@ -43,7 +44,8 @@ pipeline {
         }
       }
     }
-          
+   */
+ 
     stage("Unit Test") {
       steps {
         dir("./app") {
