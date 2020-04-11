@@ -77,7 +77,8 @@ pipeline {
         }
       }
     }
- 
+
+    /*
     stage("Integration Test") {
       steps {
         script {
@@ -95,6 +96,7 @@ pipeline {
         }
       }
     }
+    */
   
   }
  
