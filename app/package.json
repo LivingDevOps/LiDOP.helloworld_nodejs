@@ -12,7 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "latest",
-    "pug": "latest"
+    "pug": "latest",
+    "unleash-client": "^3.3.6"
   },
   "devDependencies": {
     "chai": "latest",

@@ -14,7 +14,8 @@ app.get('/api', function (req, res) {
 })
 
 app.get('/', function (req, res) {
-  res.render('index', { title: 'LiDOP', message: 'Hello LiDOP!'});
+  renderTitle(res);
+  
 });
 
 // Launch listening server on port 80
@@ -27,3 +28,50 @@ process.on('SIGINT', function() {
   console.log("Caught interrupt signal");
   server.close();
 });
+
+const { initialize, isEnabled } = require('unleash-client');
+
+const instance = initialize({
+    url: 'http://192.168.31.23:4242/api/',
+    appName: 'my-app-name',
+    instanceId: 'my-unique-instance-id',
+    interval: 1000
+});
+
+// optional events
+instance.on('error', console.error);
+instance.on('warn', console.warn);
+instance.on('ready', console.log);
+
+// metrics hooks
+instance.on('registered', clientData => console.log('registered', clientData));
+instance.on('sent', payload => console.log('metrics bucket/payload sent', payload));
+instance.on('count', (name, enabled) => console.log(`isEnabled(${name}) returned ${enabled}`));
+
+
+instance.once('registered', () => {
+    // Do something after the client has registered with the server api.
+    // NB! It might not have recieved updated feature toggles yet.
+    console.log(`registered client at server. DemoToggle is enabled: ${isEnabled('DemoToggle')}`);
+});
+
+instance.once('changed', () => {
+    console.log(`DemoToggle is enabled: ${isEnabled('DemoToggle')}`);
+});
+
+/*setInterval(() => {
+  if(instance.isEnabled('DemoToggle')) {
+    console.log('Toggle enabled');
+  } else {
+    console.log('Toggle disabled');
+  }
+}, 1000);*/
+
+function renderTitle(res) {
+  if(isEnabled('DemoToggle')){
+    res.render('index', { title: 'LiDOP', message: 'Hello FeatureFlag!'});
+  }
+  else{
+    res.render('index', { title: 'LiDOP', message: 'Hello LiDOP!'});
+  }
+}
